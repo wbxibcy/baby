@@ -35,7 +35,7 @@ class MeUpdateResponse(BaseModel):
         orm_mode = True
 
 class DishResponse(BaseModel):
-    did: int
+    id: int
     name: str
     image: Optional[bytes] = Field(None, description="image")
 

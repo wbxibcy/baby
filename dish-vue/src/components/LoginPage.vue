@@ -9,6 +9,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     data() {
         return {
@@ -20,22 +22,15 @@ export default {
     methods: {
         async login() {
             try {
-                const response = await fetch('http://127.0.0.1:8000/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        account: this.username,
-                        password: this.password
-                    })
+                const response = await axios.post('http://127.0.0.1:8000/login', {
+                    account: this.username,
+                    password: this.password
                 });
-                if (response.ok) {
-                    const data = await response.json();
-                    this.$router.push({ name: 'UserProfile', params: { userId: data.user_id } });
+                if (response.status === 200) {
+                    const data = response.data;
+                    this.$router.push({ name: 'BabyPage', params: { userId: data.user_id } });
                 } else {
-                    // 登录失败，显示错误信息
-                    const errorData = await response.json();
+                    const errorData = response.data;
                     this.errorMessage = errorData.detail;
                 }
             } catch (error) {
