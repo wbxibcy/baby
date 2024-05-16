@@ -1,72 +1,79 @@
 <template>
-  <div>
-    <h1>Baby</h1>
-    <p>User ID: {{ userId }}</p>
-
-    <h2>Add Dish</h2>
-    <form @submit.prevent="addDish">
-      <label for="name">Name:</label>
-      <input type="text" id="name" v-model="name" placeholder="Dish Name">
-
-      <label for="image">Image:</label>
-      <input type="file" id="image" @change="onFileChange">
-
-      <label for="favourite">Favourite:</label>
-      <input type="checkbox" id="favourite" v-model="favourite">
-
-      <button type="submit">Add Dish</button>
-    </form>
-
-    <div v-if="dishes.length">
-      <h2>User's Dishes:</h2>
-      <ul>
-        <li v-for="dish in dishes" :key="dish.id">
-          <span>{{ dish.name }}</span>
-          <img v-if="dish.image" :src="'data:image/jpeg;base64,' + dish.image" alt="Dish Image"
-            style="max-width: 100px;">
-          <button @click="deleteDish(dish.id)">Delete</button>
-        </li>
-      </ul>
+  <div class="container">
+    <div class="intro">
+      <h2>纯介绍</h2>
+      <p>Daily chaos got you down? Mindfulness helps navigate with focus, clarity, and inner peace. Find your calm center within.</p>
     </div>
-
+    <div class="add-dish">
+      <h2>增加宝宝辅食</h2>
+      <button @click="navigateToAddDishPage">Go to Add Dish Page</button>
+    </div>
+    <div class="history-dish">
+      <h2>历史宝宝辅食</h2>
+      <button @click="navigateToHistoryDishPage">Go to History Dish Page</button>
+    </div>
+    <div class="personal-page">
+      <h2>个人主页</h2>
+      <button @click="navigateToPersonalPage">Go to Personal Page</button>
+    </div>
   </div>
 </template>
 
 <script>
-import { fetchDishes, addDish, deleteDish } from '../services/api';
-
 export default {
   data() {
     return {
       userId: null,
-      name: '',
-      image: null,
-      favourite: false,
-      dishes: [],
     };
   },
   created() {
     this.userId = this.$route.params.userId;
-    this.fetchUserDishes();
   },
   methods: {
-    async fetchUserDishes() {
-      this.dishes = await fetchDishes(this.userId);
+    navigateToAddDishPage() {
+      this.$router.push({ name: 'AddDishPage', params: { userId: this.userId } });
     },
-    async addDish() {
-      await addDish(this.name, this.image, this.favourite, this.userId);
-      this.fetchUserDishes();
-      this.name = '';
-      this.image = null;
-      this.favourite = false;
+    navigateToHistoryDishPage() {
+      this.$router.push({ name: 'HistoryDishPage', params: { userId: this.userId } });
     },
-    async deleteDish(dishId) {
-      await deleteDish(this.userId, dishId);
-      this.fetchUserDishes();
-    },
-    onFileChange(event) {
-      this.image = event.target.files[0];
-    },
+    navigateToPersonalPage() {
+      this.$router.push({ name: 'PersonalPage', params: { userId: this.userId } });
+    }
   },
 };
 </script>
+
+<style>
+.container {
+  display: grid;
+  grid-template-areas: 
+    "intro intro intro"
+    "add-dish history-dish personal-page";
+  gap: 20px;
+}
+
+.intro {
+  grid-area: intro;
+  background-color: #D9BCE3;
+  padding: 20px;
+  text-align: center;
+}
+
+.add-dish {
+  grid-area: add-dish;
+  background-color: #B5D8CF;
+  padding: 20px;
+}
+
+.history-dish {
+  grid-area: history-dish;
+  background-color: #9FD4E5;
+  padding: 20px;
+}
+
+.personal-page {
+  grid-area: personal-page;
+  background-color: #D4E3B5;
+  padding: 20px;
+}
+</style>
