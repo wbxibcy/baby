@@ -1,5 +1,11 @@
 <template>
   <div class="container">
+    <div class="header">
+      <div class="title">欢迎使用宝宝辅食管理系统</div>
+      <div class="avatar" @click="navigateToPersonalPage">
+        <img src="../assets/logo.png" alt="User Avatar" />
+      </div>
+    </div>
     <div class="intro">
       <h2>纯介绍</h2>
       <p>Daily chaos got you down? Mindfulness helps navigate with focus, clarity, and inner peace. Find your calm center within.</p>
@@ -47,9 +53,35 @@ export default {
 .container {
   display: grid;
   grid-template-areas: 
+    "header header header"
     "intro intro intro"
     "add-dish history-dish personal-page";
   gap: 20px;
+}
+
+.header {
+  grid-area: header;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  padding: 10px 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.avatar {
+  cursor: pointer;
+}
+
+.avatar img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
 }
 
 .intro {
