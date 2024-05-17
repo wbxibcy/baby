@@ -84,3 +84,50 @@ export async function getDishIdByName(userId, dishName) {
     return null;
   }
 }
+
+export async function fetchFavouriteDishes(userId) {
+  try {
+    const response = await axios.get(`http://127.0.0.1:8000/dishes/favourite?uid=${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching favourite dishes:', error);
+    return [];
+  }
+}
+
+export async function searchDishes(userId, query) {
+  try {
+    const response = await axios.get(`http://127.0.0.1:8000/dishes/search?uid=${userId}&query=${query}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error searching dishes:', error);
+    return [];
+  }
+}
+
+export async function updateDish(dishId, name, image) {
+  try {
+    const formData = new FormData();
+    formData.append('did', dishId);
+    formData.append('name', name);
+    if (image) {
+      formData.append('image', image);
+    }
+
+    const response = await axios.put('http://127.0.0.1:8000/dishes/update', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Error updating dish:', error);
+    return null;
+  }
+}
+
+export const deleteAllIngredients = async (userId, dishId) => {
+  const response = await axios.delete(`http://127.0.0.1:8000/ingredients/delete?uid=${userId}&did=${dishId}`);
+  return response;
+};

@@ -93,13 +93,13 @@ export default {
 
 .add-dish {
   grid-area: add-dish;
-  background-color: #B5D8CF;
+  background-color: #9FD4E5; 
   padding: 20px;
 }
 
 .history-dish {
   grid-area: history-dish;
-  background-color: #9FD4E5;
+  background-color: #B5D8CF;
   padding: 20px;
 }
 
