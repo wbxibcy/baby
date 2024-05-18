@@ -7,8 +7,10 @@
       </div>
     </div>
     <div class="intro">
-      <h2>纯介绍</h2>
-      <p>Daily chaos got you down? Mindfulness helps navigate with focus, clarity, and inner peace. Find your calm center within.</p>
+      <div class="intro-overlay">
+        <h2>是否在为宝宝的辅食选择和管理而烦恼？</h2>
+        <p>我们的宝宝辅食管理系统可以帮助你做出更好的决策，确保宝宝获得健康营养的饮食。找到适合宝宝的辅食搭配，让宝宝健康成长。</p>
+      </div>
     </div>
     <div class="add-dish" @click="navigateToAddDishPage">
       <h2>增加宝宝辅食</h2>
@@ -23,7 +25,8 @@
 </template>
 
 <style>
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
@@ -31,7 +34,7 @@ html, body {
 
 .container {
   display: grid;
-  grid-template-areas: 
+  grid-template-areas:
     "header header header"
     "intro intro intro"
     "add-dish history-dish personal-page";
@@ -68,47 +71,75 @@ html, body {
   grid-area: intro;
   background: url('../assets/welcome-background.png') no-repeat center center;
   background-size: cover;
-  padding: 20px;
+  padding: 40px 20px;
   text-align: center;
-  color: white; /* Ensure text is visible on background */
+  height: 50vh;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+/* .intro-overlay {
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 20px;
+  border-radius: 10px;
+} */
+
+.intro h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+}
+
+.intro p {
+  font-size: 18px;
+  line-height: 1.5;
+  color: #191818;
+}
+
+.add-dish,
+.history-dish,
+.personal-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  text-align: center;
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .add-dish {
   grid-area: add-dish;
   background: url('../assets/addpage-background.png') no-repeat center center;
   background-size: cover;
-  padding: 20px;
-  cursor: pointer;
-  text-align: center;
-  color: white; /* Ensure text is visible on background */
+  height: 20vh;
+  width: 40vh;
 }
 
 .history-dish {
   grid-area: history-dish;
   background: url('../assets/history-background.png') no-repeat center center;
   background-size: cover;
-  padding: 20px;
-  cursor: pointer;
-  text-align: center;
-  color: white; /* Ensure text is visible on background */
+  height: 20vh;
+  width: 50vh;
 }
 
 .personal-page {
   grid-area: personal-page;
   background: url('../assets/personal-background.png') no-repeat center center;
   background-size: cover;
-  padding: 20px;
-  cursor: pointer;
-  text-align: center;
-  color: white; /* Ensure text is visible on background */
+  height: 20vh;
+  width: 40vh;
 }
 
 h2 {
   margin: 0;
 }
 </style>
-
-
 
 <script>
 export default {

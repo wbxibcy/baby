@@ -1,5 +1,5 @@
 <template>
-  <div class="personal-page">
+  <div class="personal">
     <h2>个人主页</h2>
     <el-card v-if="user" class="user-card">
       <p><strong>姓名:</strong> {{ user.name }}</p>
@@ -26,7 +26,7 @@ html, body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-.personal-page {
+.personal {
   background: url('../assets/personal-background.png') no-repeat center center fixed;
   background-size: cover;
   height: 100%; /* Ensures the container takes the full height of the viewport */

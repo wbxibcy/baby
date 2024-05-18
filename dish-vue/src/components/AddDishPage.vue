@@ -10,17 +10,17 @@
 
       <div v-if="step === 1" class="form-container">
         <el-form @submit.prevent="nextStep" label-width="100px">
-          <el-form-item label="Name">
+          <el-form-item label="名称">
             <el-input v-model="name" placeholder="Dish Name" required></el-input>
           </el-form-item>
-          <el-form-item label="Image">
+          <el-form-item label="图片">
             <input type="file" @change="onFileChange" required>
           </el-form-item>
-          <el-form-item label="Favourite">
+          <el-form-item label="收藏">
             <el-checkbox v-model="favourite"></el-checkbox>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" native-type="submit">Next Step</el-button>
+            <el-button type="primary" native-type="submit">下一步</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -29,21 +29,21 @@
         <h3>添加食材</h3>
         <el-form @submit.prevent="submitIngredients" label-width="100px">
           <div v-for="(ingredient, index) in ingredients" :key="index" class="ingredient">
-            <el-form-item label="Name">
+            <el-form-item label="名称">
               <el-input v-model="ingredient.name" placeholder="Ingredient Name" required></el-input>
             </el-form-item>
-            <el-form-item label="Quantity">
+            <el-form-item label="数量">
               <el-input-number v-model="ingredient.quantity" placeholder="Quantity" required></el-input-number>
             </el-form-item>
-            <el-form-item label="Unit">
+            <el-form-item label="单位">
               <el-input v-model="ingredient.unit" placeholder="Unit" required></el-input>
             </el-form-item>
-            <el-button type="danger" @click="removeIngredient(index)">Remove</el-button>
+            <el-button type="danger" @click="removeIngredient(index)">删除</el-button>
           </div>
           <el-form-item>
-            <el-button type="primary" @click="addNewIngredient">Add Another Ingredient</el-button>
-            <el-button type="primary" native-type="submit">Submit Ingredients</el-button>
-            <el-button type="default" @click="skipIngredients">Skip Ingredients</el-button>
+            <el-button type="primary" @click="addNewIngredient">添加更多食材</el-button>
+            <el-button type="primary" native-type="submit">提交食材</el-button>
+            <el-button type="default" @click="skipIngredients">跳过食材</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -54,11 +54,11 @@
       </div>
 
       <!-- Modal Dialog -->
-      <el-dialog :title="modalTitle" :visible.sync="showModal" width="30%">
+      <el-dialog :title="modalTitle" v-model:visible="showModal" width="30%">
         <p>{{ modalMessage }}</p>
-        <span slot="footer" class="dialog-footer">
+        <template #footer>
           <el-button type="primary" @click="goToHomePage">返回主页</el-button>
-        </span>
+        </template>
       </el-dialog>
     </el-main>
   </el-container>
@@ -87,22 +87,19 @@ body {
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 50vh; /* Adjust height to 50% of the viewport height */
+  height: 100%;
 }
 
 .steps {
-  width: 60%;
-  /* Set the width of the steps bar */
+  width: 80%;
   max-width: 800px;
-  /* Ensure it looks good on large screens */
   margin-bottom: 40px;
-  /* Space between the steps bar and form */
   display: flex;
   justify-content: center;
 }
 
 .form-container {
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.9);
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
@@ -115,11 +112,24 @@ body {
 
 .ingredient {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
   margin-bottom: 10px;
+  width: 100%;
+}
+
+.ingredient > .el-form-item {
+  flex: 1;
+  min-width: 120px;
+  margin-right: 10px;
+}
+
+.ingredient > .el-button {
+  align-self: flex-start;
+  margin-top: 28px;
 }
 </style>
-
 
 <script>
 import { addDish, addIngredients, getDishIdByName } from '../services/api';

@@ -1,70 +1,110 @@
 <template>
   <div class="history-dish-page">
-    <h2>历史宝宝辅食</h2>
+    <el-card class="content-card">
+      <h2>历史宝宝辅食</h2>
 
-    <label for="filter">显示:</label>
-    <select id="filter" v-model="filter" @change="applyFilter">
-      <option value="all">全部</option>
-      <option value="favourite">收藏</option>
-    </select>
+      <el-form inline>
+        <el-form-item label="显示">
+          <el-select v-model="filter" @change="applyFilter" placeholder="请选择">
+            <el-option label="全部" value="all"></el-option>
+            <el-option label="收藏" value="favourite"></el-option>
+          </el-select>
+        </el-form-item>
 
-    <label for="search">搜索:</label>
-    <input id="search" v-model="searchQuery" placeholder="搜索菜品..." />
-    <button @click="searchDishes">搜索</button>
+        <el-form-item label="搜索" class="search-item">
+          <el-input v-model="searchQuery" placeholder="搜索菜品..."></el-input>
+        </el-form-item>
+        <el-form-item class="search-button">
+          <el-button @click="searchDishes" type="primary">搜索</el-button>
+        </el-form-item>
+      </el-form>
 
-    <ul>
-      <li v-for="dish in filteredDishes" :key="dish.id">
-        <span>{{ dish.name }}</span>
-        <img v-if="dish.image" :src="'data:image/jpeg;base64,' + dish.image" alt="Dish Image" style="max-width: 100px;" @click="viewIngredients(dish)">
-        <button @click="deleteDish(dish.id)">删除</button>
-        <button @click="editDish(dish)">编辑</button>
-      </li>
-    </ul>
+      <div class="dish-list">
+        <div class="dish-item" v-for="dish in paginatedDishes" :key="dish.id">
+          <el-image v-if="dish.image" :src="'data:image/jpeg;base64,' + dish.image" class="dish-image" @click="viewIngredients(dish)" />
+          <div class="dish-info">
+            <span class="dish-name">{{ dish.name }}</span>
+            <div class="dish-actions">
+              <el-button @click="confirmDelete(dish.id)" type="danger" plain>删除</el-button>
+              <el-button @click="editDish(dish)" type="warning" plain>编辑</el-button>
+            </div>
+          </div>
+        </div>
+      </div>
 
-    <!-- 模态对话框显示食材信息 -->
-    <div v-if="showModal" class="modal">
-      <div class="modal-content">
-        <h3>食材信息</h3>
+      <el-pagination
+        layout="prev, pager, next"
+        :total="filteredDishes.length"
+        :page-size="3"
+        @current-change="handlePageChange"
+        v-model:currentPage="currentPage">
+      </el-pagination>
+
+      <el-dialog v-model="showModal" title="食材信息">
         <ul>
           <li v-for="ingredient in ingredients" :key="ingredient.name">
             <span>{{ ingredient.name }}: {{ ingredient.quantity }} {{ ingredient.unit }}</span>
           </li>
         </ul>
-        <button @click="closeModal">关闭</button>
-        <button @click="openAddIngredientsModal">继续添加食材</button>
-      </div>
-    </div>
+        <template #footer>
+          <el-button @click="closeModal">关闭</el-button>
+          <!-- <el-button type="primary" @click="openAddIngredientsModal">继续添加食材</el-button> -->
+        </template>
+      </el-dialog>
 
-    <!-- 编辑菜品模态对话框 -->
-    <div v-if="showEditModal" class="modal">
-      <div class="modal-content">
-        <h3>编辑菜品</h3>
-        <label for="editName">名字:</label>
-        <input id="editName" v-model="editDishData.name" />
-        <label for="editImage">图片:</label>
-        <input id="editImage" type="file" @change="handleImageChange" />
-        <button @click="updateDish">更新</button>
-        <button @click="closeEditModal">关闭</button>
-      </div>
-    </div>
+      <el-dialog v-model="showEditModal" title="编辑菜品">
+        <el-form>
+          <el-form-item label="名字">
+            <el-input v-model="editDishData.name"></el-input>
+          </el-form-item>
+          <el-form-item label="图片">
+            <input type="file" @change="handleImageChange" />
+          </el-form-item>
+          <div v-for="(ingredient, index) in editDishData.ingredients" :key="index" class="ingredient">
+            <el-form-item label="食材名字">
+              <el-input v-model="ingredient.name"></el-input>
+            </el-form-item>
+            <el-form-item label="数量">
+              <el-input v-model="ingredient.quantity" type="number"></el-input>
+            </el-form-item>
+            <el-form-item label="单位">
+              <el-input v-model="ingredient.unit"></el-input>
+            </el-form-item>
+          </div>
+        </el-form>
+        <template #footer>
+          <el-button @click="closeEditModal">关闭</el-button>
+          <el-button type="primary" @click="updateDish">更新</el-button>
+        </template>
+      </el-dialog>
 
-    <!-- 添加食材模态对话框 -->
-    <div v-if="showAddIngredientsModal" class="modal">
-      <div class="modal-content">
-        <h3>添加食材</h3>
+      <el-dialog v-model="showAddIngredientsModal" title="添加食材">
         <div v-for="(ingredient, index) in newIngredients" :key="index">
-          <label for="ingredientName">食材名字:</label>
-          <input id="ingredientName" v-model="ingredient.name" />
-          <label for="ingredientQuantity">数量:</label>
-          <input id="ingredientQuantity" v-model="ingredient.quantity" type="number" />
-          <label for="ingredientUnit">单位:</label>
-          <input id="ingredientUnit" v-model="ingredient.unit" />
+          <el-form-item label="食材名字">
+            <el-input v-model="ingredient.name"></el-input>
+          </el-form-item>
+          <el-form-item label="数量">
+            <el-input v-model="ingredient.quantity" type="number"></el-input>
+          </el-form-item>
+          <el-form-item label="单位">
+            <el-input v-model="ingredient.unit"></el-input>
+          </el-form-item>
         </div>
-        <button @click="addIngredientField">添加更多食材</button>
-        <button @click="submitNewIngredients">提交</button>
-        <button @click="closeAddIngredientsModal">关闭</button>
-      </div>
-    </div>
+        <template #footer>
+          <el-button @click="addIngredientField">添加更多食材</el-button>
+          <el-button type="primary" @click="submitNewIngredients">提交</el-button>
+          <el-button @click="closeAddIngredientsModal">关闭</el-button>
+        </template>
+      </el-dialog>
+
+      <el-dialog v-model="showDeleteConfirmDialog" title="确认删除">
+        <p>你确定要删除这个菜品吗？此操作不可恢复。</p>
+        <template #footer>
+          <el-button @click="showDeleteConfirmDialog = false">取消</el-button>
+          <el-button type="primary" @click="deleteConfirmedDish">确认删除</el-button>
+        </template>
+      </el-dialog>
+    </el-card>
   </div>
 </template>
 
@@ -91,16 +131,20 @@ export default {
       showModal: false,
       showEditModal: false,
       showAddIngredientsModal: false,
+      showDeleteConfirmDialog: false,
       ingredients: [],
       currentDishId: null,
+      dishIdToDelete: null,
       editDishData: {
         id: null,
         name: '',
-        image: null
+        image: null,
+        ingredients: []
       },
       newIngredients: [
         { name: '', quantity: '', unit: '' }
-      ]
+      ],
+      currentPage: 1,
     };
   },
   computed: {
@@ -111,6 +155,11 @@ export default {
         return this.favouriteDishes;
       }
       return this.dishes;
+    },
+    paginatedDishes() {
+      const start = (this.currentPage - 1) * 3;
+      const end = start + 3;
+      return this.filteredDishes.slice(start, end);
     }
   },
   created() {
@@ -125,8 +174,13 @@ export default {
     async fetchFavouriteDishes() {
       this.favouriteDishes = await fetchFavouriteDishes(this.userId);
     },
-    async deleteDish(dishId) {
-      await deleteDish(dishId);
+    confirmDelete(dishId) {
+      this.dishIdToDelete = dishId;
+      this.showDeleteConfirmDialog = true;
+    },
+    async deleteConfirmedDish() {
+      await deleteDish(this.dishIdToDelete);
+      this.showDeleteConfirmDialog = false;
       this.fetchUserDishes();
       this.fetchFavouriteDishes();
     },
@@ -147,10 +201,11 @@ export default {
     },
     applyFilter() {
     },
-    editDish(dish) {
+    async editDish(dish) {
       this.editDishData.id = dish.id;
       this.editDishData.name = dish.name;
       this.editDishData.image = null; // 清空当前图片
+      this.editDishData.ingredients = await fetchIngredients(this.userId, dish.id);
       this.showEditModal = true;
     },
     closeEditModal() {
@@ -160,8 +215,8 @@ export default {
       this.editDishData.image = event.target.files[0];
     },
     async updateDish() {
-      const { id, name, image } = this.editDishData;
-      const result = await updateDish(id, name, image);
+      const { id, name, image, ingredients } = this.editDishData;
+      const result = await updateDish(id, name, image, ingredients);
       if (result && result.message === 'Update successful') {
         this.fetchUserDishes();
         this.fetchFavouriteDishes();
@@ -197,39 +252,86 @@ export default {
       } else {
         alert('添加食材失败');
       }
+    },
+    handlePageChange(page) {
+      this.currentPage = page;
     }
   },
 };
 </script>
 
 <style>
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-image: url('../assets/history-background.png'); /* 替换为你的背景图片路径 */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh;
+  overflow: hidden;
+}
+
 .history-dish-page {
-  background-color: #9FD4E5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Ensures the container takes the full height of the viewport */
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.content-card {
+  background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent background to ensure content readability */
   padding: 20px;
   border-radius: 10px;
+  width: 100%;
   max-width: 600px;
-  margin: auto;
 }
 
-.history-dish-page ul {
-  list-style: none;
-  padding: 0;
+.el-form-item.search-item,
+.el-form-item.search-button {
+  margin-bottom: 0;
 }
 
-.history-dish-page li {
+.dish-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.dish-item {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  border: 1px solid #e0e0e0;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
 }
 
-.history-dish-page img {
-  margin-left: 10px;
-  margin-right: 10px;
+.dish-image {
+  margin-right: 15px;
   cursor: pointer;
+  border-radius: 5px;
 }
 
-.history-dish-page span {
-  cursor: pointer;
+.dish-info {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dish-name {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.dish-actions {
+  display: flex;
+  gap: 10px;
 }
 
 /* 模态对话框样式 */
