@@ -10,46 +10,25 @@
       <h2>纯介绍</h2>
       <p>Daily chaos got you down? Mindfulness helps navigate with focus, clarity, and inner peace. Find your calm center within.</p>
     </div>
-    <div class="add-dish">
+    <div class="add-dish" @click="navigateToAddDishPage">
       <h2>增加宝宝辅食</h2>
-      <button @click="navigateToAddDishPage">Go to Add Dish Page</button>
     </div>
-    <div class="history-dish">
+    <div class="history-dish" @click="navigateToHistoryDishPage">
       <h2>历史宝宝辅食</h2>
-      <button @click="navigateToHistoryDishPage">Go to History Dish Page</button>
     </div>
-    <div class="personal-page">
+    <div class="personal-page" @click="navigateToPersonalPage">
       <h2>个人主页</h2>
-      <button @click="navigateToPersonalPage">Go to Personal Page</button>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      userId: null,
-    };
-  },
-  created() {
-    this.userId = this.$route.params.userId;
-  },
-  methods: {
-    navigateToAddDishPage() {
-      this.$router.push({ name: 'AddDishPage', params: { userId: this.userId } });
-    },
-    navigateToHistoryDishPage() {
-      this.$router.push({ name: 'HistoryDishPage', params: { userId: this.userId } });
-    },
-    navigateToPersonalPage() {
-      this.$router.push({ name: 'PersonalPage', params: { userId: this.userId } });
-    }
-  },
-};
-</script>
-
 <style>
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
 .container {
   display: grid;
   grid-template-areas: 
@@ -57,6 +36,7 @@ export default {
     "intro intro intro"
     "add-dish history-dish personal-page";
   gap: 20px;
+  padding: 20px;
 }
 
 .header {
@@ -86,26 +66,70 @@ export default {
 
 .intro {
   grid-area: intro;
-  background-color: #D9BCE3;
+  background: url('../assets/welcome-background.png') no-repeat center center;
+  background-size: cover;
   padding: 20px;
   text-align: center;
+  color: white; /* Ensure text is visible on background */
 }
 
 .add-dish {
   grid-area: add-dish;
-  background-color: #9FD4E5; 
+  background: url('../assets/addpage-background.png') no-repeat center center;
+  background-size: cover;
   padding: 20px;
+  cursor: pointer;
+  text-align: center;
+  color: white; /* Ensure text is visible on background */
 }
 
 .history-dish {
   grid-area: history-dish;
-  background-color: #B5D8CF;
+  background: url('../assets/history-background.png') no-repeat center center;
+  background-size: cover;
   padding: 20px;
+  cursor: pointer;
+  text-align: center;
+  color: white; /* Ensure text is visible on background */
 }
 
 .personal-page {
   grid-area: personal-page;
-  background-color: #D4E3B5;
+  background: url('../assets/personal-background.png') no-repeat center center;
+  background-size: cover;
   padding: 20px;
+  cursor: pointer;
+  text-align: center;
+  color: white; /* Ensure text is visible on background */
+}
+
+h2 {
+  margin: 0;
 }
 </style>
+
+
+
+<script>
+export default {
+  data() {
+    return {
+      userId: null,
+    };
+  },
+  created() {
+    this.userId = this.$route.params.userId;
+  },
+  methods: {
+    navigateToAddDishPage() {
+      this.$router.push({ name: 'AddDishPage', params: { userId: this.userId } });
+    },
+    navigateToHistoryDishPage() {
+      this.$router.push({ name: 'HistoryDishPage', params: { userId: this.userId } });
+    },
+    navigateToPersonalPage() {
+      this.$router.push({ name: 'PersonalPage', params: { userId: this.userId } });
+    }
+  },
+};
+</script>
