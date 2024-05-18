@@ -205,7 +205,7 @@ export default {
       this.editDishData.id = dish.id;
       this.editDishData.name = dish.name;
       this.editDishData.image = null; // 清空当前图片
-      this.editDishData.ingredients = await fetchIngredients(this.userId, dish.id);
+      // this.editDishData.ingredients = await fetchIngredients(this.userId, dish.id);
       this.showEditModal = true;
     },
     closeEditModal() {

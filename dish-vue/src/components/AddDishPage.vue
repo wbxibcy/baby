@@ -103,7 +103,7 @@ body {
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-  max-width: 600px;
+  max-width: 800px;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -115,19 +115,23 @@ body {
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   width: 100%;
 }
 
 .ingredient > .el-form-item {
   flex: 1;
-  min-width: 120px;
-  margin-right: 10px;
+  min-width: 150px;
+  margin-right: 20px;
 }
 
 .ingredient > .el-button {
   align-self: flex-start;
   margin-top: 28px;
+}
+
+.el-form-item {
+  width: 100%;
 }
 </style>
 
